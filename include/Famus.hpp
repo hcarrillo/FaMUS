@@ -19,21 +19,18 @@
 #include "NeighbourSearch.hpp"
 
 
-int expr = 0;
-std::ofstream out("result.m");
+#ifndef WRITE_MATLAB
+	#define WRITE_MATLAB 0
+#endif
 
-//typedef std::pair<g2o::VertexSE2*, double> VertexCostPair;
-
-using namespace g2o;
-
-#define X_THRESH 1.50
-#define Y_THRESH 1.50
 #define THETA_THRESH 0.26
 
-#define WRITE_MATLAB 0
-
+using namespace g2o;
 typedef BlockSolver< BlockSolverTraits<-1, -1> >  SlamBlockSolver;
 typedef LinearSolverCSparse<SlamBlockSolver::PoseMatrixType> SlamLinearSolver;
+
+std::ofstream out("result.m");
+
 
 std::vector<int> leastUncertanityPath
 (
@@ -82,12 +79,12 @@ std::vector<int> leastUncertanityPath
 
 	//std::ofstream out("result.m");
 
-	if(WRITE_MATLAB and expr == 0 )
+	if(WRITE_MATLAB)
 	{
-		out<<" E_all {"<<expr+1<<"} = "<<optimizer.edges().size()<<";"<<std::endl;
-		out<<" V_all {"<<expr+1<<"}= "<<optimizer.vertices().size()<<";"<<std::endl;
+		out<<" E_all {"<<1<<"} = "<<optimizer.edges().size()<<";"<<std::endl;
+		out<<" V_all {"<<1<<"}= "<<optimizer.vertices().size()<<";"<<std::endl;
 
-		out<<"cost {"<<expr+1<<"} = ["<<std::endl;
+		out<<"cost {"<<1<<"} = ["<<std::endl;
 	}
 
 	for (vIt = optimizer.vertices().begin() ; vIt != (vEnd) ; vIt++)
@@ -96,7 +93,7 @@ std::vector<int> leastUncertanityPath
 		Eigen::MatrixXcd values = Vi->uncertainty().eigenvalues();
 		logSum =  (log(values.real()(0,0))+log(values.real()(1,0))+log(values.real()(2,0)))/3.;
 		vertexCostMap[Vi->id()]=exp(logSum);;
-		if(WRITE_MATLAB and expr == 0)
+		if(WRITE_MATLAB)
 		{
 			out<<Vi->id()<<" "
 					<<Vi->estimate().translation()[0]<<" "
@@ -104,7 +101,7 @@ std::vector<int> leastUncertanityPath
 					<<exp(logSum)<<" "<< std::setprecision(9)<<Vi->uncertainty().trace()<<std::endl;
 		}
 	}
-	if(WRITE_MATLAB and expr == 0) out<<"];"<<std::endl;
+	if(WRITE_MATLAB ) out<<"];"<<std::endl;
 
 
 	std::cerr<<(clock()-now)/1e3<<" ms"<<std::endl;
@@ -315,7 +312,7 @@ std::vector<int> leastUncertanityPath
 
 	std::cout<<"Path Cost Minimum Uncertainty :"<< d[end]<<std::endl;
 
-	if(WRITE_MATLAB) { out<<"PathCost{"<<expr+1<<"} = "<<d[end]<<";"<<std::endl; }
+	if(WRITE_MATLAB) { out<<"PathCost{"<<1<<"} = "<<d[end]<<";"<<std::endl; }
 
 	std::set<std::pair<int,int> > pathSegments;
 
@@ -329,7 +326,7 @@ std::vector<int> leastUncertanityPath
 
 	if(WRITE_MATLAB)
 	{
-		out<<"minCostPath{"<<expr+1<<"} = [ "<<std::endl;
+		out<<"minCostPath{"<<1<<"} = [ "<<std::endl;
 		out<<currentnode<<" ";
 	}
 
@@ -376,12 +373,12 @@ std::vector<int> leastUncertanityPath
 		out<<std::endl;
 		out<<"];"<<std::endl;
 
-		out<<" V_reduced  {"<<expr+1<<"}= "<< optimizer.vertices().size()<<";"<<std::endl;
-		out<<" E_reduced  {"<<expr+1<<"}= "<<optimizer.edges().size()<<";"<<std::endl;
+		out<<" V_reduced  {"<<1<<"}= "<< optimizer.vertices().size()<<";"<<std::endl;
+		out<<" E_reduced  {"<<1<<"}= "<<optimizer.edges().size()<<";"<<std::endl;
 	}
 	std::cout<<"# Decision Points "<<optimizer.vertices().size()<<std::endl;
 
-	if(WRITE_MATLAB){ out<<"DecisionPoints {"<<expr+1<<"} = "<<optimizer.vertices().size()<<" ; "<<std::endl; }
+	if(WRITE_MATLAB){ out<<"DecisionPoints {"<<1<<"} = "<<optimizer.vertices().size()<<" ; "<<std::endl; }
 
 
 	//optimizer.save("second.g2o");
@@ -541,7 +538,7 @@ std::vector<int> shortestPath
 
 	if(WRITE_MATLAB)
 	{
-		out<<"shortestPath{"<<expr+1<<"} = [ "<<std::endl;
+		out<<"shortestPath{"<<1<<"} = [ "<<std::endl;
 		out<<currentnode<<" ";
 	}
 
