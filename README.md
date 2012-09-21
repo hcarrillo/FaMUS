@@ -40,7 +40,9 @@ Although g2o was used for the experiment, as stated in the paper others graph-SL
 * Go to the build folder
   - cd build
 * compile tesp.cpp
-  - make
+  - make  
+
+The code was tested under Kubuntu 10.04 32 bits.  
 
 #Usage
 ***
