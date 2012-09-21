@@ -1,5 +1,4 @@
 #Introduction
-#Introduction
 ***
 This repository contains the accompanying code of our IROS'12 paper Fast Minimum Uncertainty Search on a Graph
 Map Representation.
